@@ -8,7 +8,10 @@ class HttpJobDetails {
   static Future<List<Data>?> fetchJobDetails() async {
     var sharedPrefs = await SharedPreferences.getInstance();
     try {
-      var authToken = sharedPrefs.getString(MyStrings.AUTH_TOKEN_KEY);
+      String? authToken = sharedPrefs.getString(MyStrings.AUTH_TOKEN_KEY);
+
+      print(authToken);
+      print(authToken);
 
       // Check if authToken is not null
       if (authToken != null) {
@@ -17,12 +20,14 @@ class HttpJobDetails {
         };
 
         http.Response response = await http.get(
-          Uri.parse('https://api.ourgoodspace.com/api/d2/member/dashboard/feed?limit=1&page=0'),
+          Uri.parse(
+              'https://api.ourgoodspace.com/api/d2/member/dashboard/feed?limit=10&page=0'),
           headers: headers,
         );
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
           JobModel jobModel = JobModel.fromJson(jsonResponse);
 
           // Now you can access jobModel.data to get the list of job details

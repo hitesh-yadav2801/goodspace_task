@@ -27,14 +27,16 @@ class JobModel {
 class Data {
   String? type;
   CardData? cardData;
+  String? cardType;
 
-  Data({this.type, this.cardData});
+  Data({this.type, this.cardData, this.cardType});
 
   Data.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     cardData = json['cardData'] != null
         ? new CardData.fromJson(json['cardData'])
         : null;
+    cardType = json['cardType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,6 +45,7 @@ class Data {
     if (this.cardData != null) {
       data['cardData'] = this.cardData!.toJson();
     }
+    data['cardType'] = this.cardType;
     return data;
   }
 }
@@ -58,20 +61,20 @@ class CardData {
   int? lowerworkex;
   int? upperworkex;
   String? monthlyCompensation;
-  Null? hourlyCompensation;
+  String? hourlyCompensation;
   int? monthlyCompensationId;
-  Null? hourlyCompensationId;
+  String? hourlyCompensationId;
   int? isRemote;
-  Null? redirectUrl;
-  Null? minScore;
-  Null? minAge;
-  Null? maxAge;
-  Null? locationCity;
-  Null? distance;
+  String? redirectUrl;
+  String? minScore;
+  String? minAge;
+  String? maxAge;
+  String? locationCity;
+  num? distance;
   int? isOrganic;
   String? title;
-  Null? industryTypeId;
-  Null? industryType;
+  String? industryTypeId;
+  String? industryType;
   int? jobFunctionId;
   int? designationId;
   String? designation;
@@ -91,45 +94,45 @@ class CardData {
 
   CardData(
       {this.showOrganisation,
-        this.offerId,
-        this.userId,
-        this.companyName,
-        this.offerTypeId,
-        this.description,
-        this.url,
-        this.lowerworkex,
-        this.upperworkex,
-        this.monthlyCompensation,
-        this.hourlyCompensation,
-        this.monthlyCompensationId,
-        this.hourlyCompensationId,
-        this.isRemote,
-        this.redirectUrl,
-        this.minScore,
-        this.minAge,
-        this.maxAge,
-        this.locationCity,
-        this.distance,
-        this.isOrganic,
-        this.title,
-        this.industryTypeId,
-        this.industryType,
-        this.jobFunctionId,
-        this.designationId,
-        this.designation,
-        this.date,
-        this.hasApplied,
-        this.needToRedirect,
-        this.jobSaved,
-        this.isBusinessOpportunity,
-        this.showRelocateModal,
-        this.skills,
-        this.jobType,
-        this.displayCompensation,
-        this.relativeTime,
-        this.postedAtRelative,
-        this.hasLiked,
-        this.userInfo});
+      this.offerId,
+      this.userId,
+      this.companyName,
+      this.offerTypeId,
+      this.description,
+      this.url,
+      this.lowerworkex,
+      this.upperworkex,
+      this.monthlyCompensation,
+      this.hourlyCompensation,
+      this.monthlyCompensationId,
+      this.hourlyCompensationId,
+      this.isRemote,
+      this.redirectUrl,
+      this.minScore,
+      this.minAge,
+      this.maxAge,
+      this.locationCity,
+      this.distance,
+      this.isOrganic,
+      this.title,
+      this.industryTypeId,
+      this.industryType,
+      this.jobFunctionId,
+      this.designationId,
+      this.designation,
+      this.date,
+      this.hasApplied,
+      this.needToRedirect,
+      this.jobSaved,
+      this.isBusinessOpportunity,
+      this.showRelocateModal,
+      this.skills,
+      this.jobType,
+      this.displayCompensation,
+      this.relativeTime,
+      this.postedAtRelative,
+      this.hasLiked,
+      this.userInfo});
 
   CardData.fromJson(Map<String, dynamic> json) {
     showOrganisation = json['showOrganisation'];
@@ -286,15 +289,15 @@ class UserInfo {
   int? userId;
   String? name;
   String? imageId;
-  int? score;
+  num? score;
   bool? isProfileVerified;
 
   UserInfo(
       {this.userId,
-        this.name,
-        this.imageId,
-        this.score,
-        this.isProfileVerified});
+      this.name,
+      this.imageId,
+      this.score,
+      this.isProfileVerified});
 
   UserInfo.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];

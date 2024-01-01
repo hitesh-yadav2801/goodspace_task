@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:goodspace_task/core/constants/my_colors.dart';
-import 'package:goodspace_task/data/http_auth.dart';
+import 'package:goodspace_task/data/providers/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../common_widgets/otp_textfield.dart';
@@ -9,9 +9,7 @@ import '../common_widgets/primary_button.dart';
 
 class OTPScreen extends StatefulWidget {
   late final String phoneNumber;
-
-
-  String otpCode = "";// Pass the phone number from the previous screen
+  String otpCode = "";
 
   OTPScreen({required this.phoneNumber});
 
@@ -21,13 +19,25 @@ class OTPScreen extends StatefulWidget {
 
 class _OTPScreenState extends State<OTPScreen> {
 
-
   final textEditingController1 = TextEditingController();
   final textEditingController2 = TextEditingController();
   final textEditingController3 = TextEditingController();
   final textEditingController4 = TextEditingController();
+  String errorMessage = "";
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.addListener(() {
+      setState(() {
+        errorMessage = authProvider.errorMessage!;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -46,7 +56,7 @@ class _OTPScreenState extends State<OTPScreen> {
                   color: MyColors.greyColor,
                 ),
                 onPressed: () {
-                  // Add functionality to edit phone number
+                  Navigator.pop(context);
                 },
               ),
             ],
@@ -124,6 +134,11 @@ class _OTPScreenState extends State<OTPScreen> {
                   }),
                 ],
               ),
+              if (errorMessage != '')
+                Text(
+                  errorMessage,
+                  style: const TextStyle(color: Colors.red),
+                ),
               const SizedBox(height: 16),
               RichText(
                 text: const TextSpan(
@@ -142,12 +157,26 @@ class _OTPScreenState extends State<OTPScreen> {
               // Elevated Button
               const SizedBox(height: 48.0),
               PrimaryButton(
-                  title: 'Verify Phone',
-                  onPressed: () {
-                    String otp = "${textEditingController1.text}${textEditingController2.text}${textEditingController3.text}${textEditingController4.text}";
-                    print(otp);
-                    HttpServiceAuth.verifyOTP(number: widget.phoneNumber, otp: otp, countryCode: "+91", context: context);
+                title: 'Verify Phone',
+                onPressed: () async {
+                  String otp = "${textEditingController1.text}${textEditingController2.text}${textEditingController3.text}${textEditingController4.text}";
+                  try {
+                    await authProvider.verifyOTP(
+                      number: widget.phoneNumber,
+                      countryCode: '+91',
+                      otp: otp,
+                      context: context,
+                    );
+                  } catch (error) {
+                    // Handle any errors from the auth provider here
+                    // Display an error message or snackbar to the user
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Enter correct otp'),
+                      ),
+                    );
                   }
+                },
               )
             ],
           ),

@@ -6,14 +6,16 @@ import 'package:goodspace_task/core/routes.dart';
 import 'package:goodspace_task/presentation/common_widgets/custom_textfield.dart';
 import 'package:goodspace_task/presentation/common_widgets/primary_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-import '../../data/http_auth.dart';
+import '../../data/providers/auth_provider.dart';
 import 'otp_screen.dart';
 
 class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
     var screenWidth = MediaQuery.of(context).size.width;
     var phoneController = TextEditingController();
 
@@ -110,11 +112,23 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 48.0),
               PrimaryButton(
                 title: 'Get OTP',
-                onPressed: () {
-                  HttpServiceAuth.getOTP(number : phoneController.text, countryCode: '+91');
-                  Navigator.pushReplacementNamed(context, Routes.otp, arguments: {'phoneNumber' : phoneController.text});
-                }
+                onPressed: () async {
+                  try {
+                    await authProvider.getOTP(
+                      number: phoneController.text,
+                      countryCode: '+91',
+                    );
+                    Navigator.pushReplacementNamed(context, Routes.otp, arguments: {'phoneNumber': phoneController.text});
+                  } catch (error) {
+                    // Display error message to the user
+                    print(error); // For debugging
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Error sending OTP: $error')),
+                    );
+                  }
+                },
               )
+
             ],
           ),
         ),
